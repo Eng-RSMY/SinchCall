@@ -10,10 +10,11 @@ import android.os.IBinder;
 public abstract class BaseActivity extends Activity implements ServiceConnection {
 
     private SinchService.SinchServiceInterface mSinchServiceInterface;
-
+    Globals global;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        global = ((Globals)getApplicationContext());
         getApplicationContext().bindService(new Intent(this, SinchService.class), this,
                 BIND_AUTO_CREATE);
     }
@@ -45,5 +46,11 @@ public abstract class BaseActivity extends Activity implements ServiceConnection
     protected SinchService.SinchServiceInterface getSinchServiceInterface() {
         return mSinchServiceInterface;
     }
-
+    @Override
+    protected void onDestroy() {
+    	// TODO Auto-generated method stub
+    	super.onDestroy();
+    	global.getmSinchClient().stopListeningOnActiveConnection();
+    	global.getmSinchClient().terminate();    	
+    }
 }
